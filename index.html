@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>وەرگێڕی گەردونی پرۆفیشناڵ</title>
+    <title>وەرگێڕی مۆدێرن و داینامیکی</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;500;700&family=Poppins:wght@400;600&display=swap');
 
         :root {
-            --primary-color: #4f46e5;
-            --primary-hover: #4338ca;
-            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-            --card-border: rgba(255, 255, 255, 0.1);
+            --primary-glow: #00f2fe;
+            --secondary-glow: #4facfe;
+            --bg-dark: #0a0f1d;
             --text-color: #f8fafc;
             --text-muted: #94a3b8;
         }
@@ -27,23 +26,40 @@
 
         body {
             min-height: 100vh;
-            background: var(--bg-gradient);
+            background-color: var(--bg-dark);
             display: flex;
             justify-content: center;
             align-items: center;
             color: var(--text-color);
-            padding: 20px;
+            padding: 15px;
+            overflow-x: hidden;
+            position: relative;
         }
 
+        /* کینڤاس بۆ دروستکردنی تەنۆکە جووڵاوەکان لە باکگراوند */
+        #bg-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* کارتی سەرەکی وەرگێڕ */
         .translator-container {
             width: 100%;
             max-width: 900px;
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--card-border);
-            border-radius: 24px;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(0, 242, 254, 0.15);
+            border-radius: 28px;
             padding: 30px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 242, 254, 0.05);
+            z-index: 2;
+            position: relative;
         }
 
         header {
@@ -51,67 +67,78 @@
             margin-bottom: 25px;
         }
 
+        /* ستایلی سەر دێڕ کە نووسراوەکەی کراوە بە کلیکبل بۆ ڕیفرێش */
         header h1 {
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: 700;
-            color: #6366f1;
-            margin-bottom: 5px;
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.2s ease;
+        }
+
+        header h1:active {
+            transform: scale(0.98);
         }
 
         header p {
             color: var(--text-muted);
-            font-size: 0.95rem;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
         }
 
+        /* بەشی زمانەکان */
         .language-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(15, 23, 42, 0.6);
-            padding: 10px 20px;
-            border-radius: 16px;
-            margin-bottom: 20px;
-            border: 1px solid var(--card-border);
+            background: rgba(30, 41, 59, 0.5);
+            padding: 12px 25px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(0, 242, 254, 0.1);
         }
 
         .lang-select {
-            font-weight: 500;
-            font-size: 1.1rem;
-            padding: 8px 16px;
-            border-radius: 8px;
-            color: var(--text-muted);
-            transition: 0.3s;
-        }
-
-        .lang-select.active {
+            font-weight: 600;
+            font-size: 1.15rem;
             color: #fff;
-            background: rgba(99, 102, 241, 0.2);
+            text-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
         }
 
         .swap-btn {
-            background: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-glow), var(--secondary-glow));
             border: none;
-            color: white;
-            width: 45px;
-            height: 45px;
+            color: #0a0f1d;
+            width: 46px;
+            height: 46px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1.1rem;
-            transition: 0.3s ease;
+            font-size: 1.2rem;
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .swap-btn:hover {
-            background: var(--primary-hover);
-            transform: rotate(180deg);
+            transform: rotate(180deg) scale(1.1);
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.7);
         }
 
+        /* بۆکسەکانی دەق بە ڕووناکی نیۆن */
         .text-area-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 25px;
             margin-bottom: 25px;
         }
 
@@ -122,18 +149,20 @@
         }
 
         .input-box, .output-box {
-            background: rgba(15, 23, 42, 0.4);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 15px;
+            background: rgba(10, 15, 29, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             min-height: 220px;
-            position: relative;
+            transition: all 0.3s ease;
         }
 
         .input-box:focus-within {
-            border-color: var(--primary-color);
+            border-color: var(--primary-glow);
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
+            background: rgba(10, 15, 29, 0.8);
         }
 
         textarea {
@@ -144,14 +173,14 @@
             resize: none;
             outline: none;
             color: #fff;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             line-height: 1.6;
         }
 
         #outputText {
             width: 100%;
             height: 140px;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             line-height: 1.6;
             overflow-y: auto;
             white-space: pre-wrap;
@@ -159,6 +188,7 @@
 
         .placeholder-text {
             color: var(--text-muted);
+            opacity: 0.5;
         }
 
         .box-controls {
@@ -166,7 +196,7 @@
             justify-content: space-between;
             align-items: center;
             margin-top: auto;
-            padding-top: 10px;
+            padding-top: 12px;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
 
@@ -175,15 +205,19 @@
             border: none;
             color: var(--text-muted);
             cursor: pointer;
-            font-size: 1rem;
-            padding: 5px 10px;
-            border-radius: 6px;
-            transition: 0.2s;
+            font-size: 1.1rem;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s ease;
         }
 
         .control-btn:hover {
-            color: #fff;
-            background: rgba(255, 255, 255, 0.1);
+            color: var(--primary-glow);
+            background: rgba(0, 242, 254, 0.1);
         }
 
         .char-count {
@@ -192,56 +226,70 @@
             direction: ltr; 
         }
 
+        /* دوگمەی ژێراو */
         .translate-btn {
             width: 100%;
-            background: var(--primary-color);
-            color: white;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            color: #0a0f1d;
             border: none;
-            padding: 14px;
-            font-size: 1.2rem;
+            padding: 16px;
+            font-size: 1.25rem;
             font-weight: bold;
-            border-radius: 14px;
+            border-radius: 18px;
             cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
-            transition: 0.3s;
+            gap: 12px;
+            box-shadow: 0 4px 20px rgba(0, 242, 254, 0.3);
+            transition: all 0.3s ease;
         }
 
         .translate-btn:hover {
-            background: var(--primary-hover);
-            box-shadow: 0 0 20px rgba(79, 70, 229, 0.4);
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.6);
+            transform: translateY(-2px);
         }
-        
+
         .translate-btn:disabled {
-            background: #475569;
+            background: #1e293b;
+            color: #64748b;
             cursor: not-allowed;
             box-shadow: none;
+        }
+
+        .fade-in-text {
+            animation: fadeInText 0.25s ease-out forwards;
+        }
+
+        @keyframes fadeInText {
+            from { opacity: 0; transform: translateY(3px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
+    <canvas id="bg-canvas"></canvas>
+
     <div class="translator-container">
         <header>
-            <h1><i class="fa-solid fa-language"></i> وەرگێڕی خێرا</h1>
-            <p>وەرگێڕانی ڕاستەوخۆ بۆ هەموو ڕستە و وشەیەک</p>
+            <h1 id="refreshTitle"><i class="fa-solid fa-circle-nodes"></i> وەرگێڕی ئەلیکترۆنی</h1>
+            <p>سیستەمی وەرگێڕانی داینامیکی و زیرەک</p>
         </header>
 
         <div class="language-row">
-            <div class="lang-select active" id="srcLangText">کوردی (سۆرانی)</div>
+            <div class="lang-select" id="srcLangText">کوردی (سۆرانی)</div>
             <button class="swap-btn" id="swapBtn" title="گۆڕینی زمانەکان">
-                <i class="fa-solid fa-arrows-rotate"></i>
+                <i class="fa-solid fa-arrows-left-right"></i>
             </button>
             <div class="lang-select" id="targetLangText">English</div>
         </div>
 
         <div class="text-area-container">
             <div class="input-box">
-                <textarea id="inputText" placeholder="دەقەکەت لێرە بنووسە..."></textarea>
+                <textarea id="inputText" placeholder="لێرە بنووسە، خۆکارانە وەردەگێڕدرێت..."></textarea>
                 <div class="box-controls">
-                    <button class="control-btn" id="clearBtn" title="پاککردنەوە"><i class="fa-solid fa-trash"></i></button>
+                    <button class="control-btn" id="clearBtn" title="پاککردنەوە"><i class="fa-solid fa-eraser"></i></button>
                     <span class="char-count" id="charCount">0 / 5000</span>
                 </div>
             </div>
@@ -255,11 +303,69 @@
         </div>
 
         <button class="translate-btn" id="translateBtn">
-            <span id="btnText">وەرگێڕان</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            <span id="btnText">وەرگێڕانی خێرا</span> <i class="fa-solid fa-bolt-lightning"></i>
         </button>
     </div>
 
     <script>
+        // --- بەشی دروستکردنی جووڵەی تەنۆکەکان لە باکگراوند (Particles Animation) ---
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particlesArray = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = Math.random() * 0.6 - 0.3;
+                this.speedY = Math.random() * 0.6 - 0.3;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x > canvas.width) this.x = 0;
+                else if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                else if (this.y < 0) this.y = canvas.height;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(0, 242, 254, 0.3)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            const numberOfParticles = Math.min(80, (canvas.width * canvas.height) / 15000);
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        initParticles();
+        animateParticles();
+
+
+        // --- بەشی لۆجیکی وەرگێڕان ---
         const inputText = document.getElementById('inputText');
         const outputText = document.getElementById('outputText');
         const translateBtn = document.getElementById('translateBtn');
@@ -270,18 +376,25 @@
         const clearBtn = document.getElementById('clearBtn');
         const copyBtn = document.getElementById('copyBtn');
         const charCount = document.getElementById('charCount');
+        const refreshTitle = document.getElementById('refreshTitle');
 
-        let sourceLang = "ckb"; // کۆدی زمانی کوردی سۆرانی
-        let targetLang = "en";  // ئینگلیزی
+        let sourceLang = "ckb"; 
+        let targetLang = "en";  
+        let typingTimer; 
+        const doneTypingInterval = 800; 
 
-        // گۆڕینی زمانەکان
+        // لۆجیکی ڕیفرێش بوونەوە کاتێک کلیک لە ناونیشانەکە دەکرێت
+        refreshTitle.addEventListener('click', () => {
+            window.location.reload();
+        });
+
         swapBtn.addEventListener('click', () => {
             if (sourceLang === "ckb") {
                 sourceLang = "en";
                 targetLang = "ckb";
                 srcLangText.textContent = "English";
                 targetLangText.textContent = "کوردی (سۆرانی)";
-                inputText.placeholder = "Type text here...";
+                inputText.placeholder = "Type text here, it translates automatically...";
                 inputText.style.direction = "ltr";
                 outputText.style.direction = "rtl";
             } else {
@@ -289,17 +402,23 @@
                 targetLang = "en";
                 srcLangText.textContent = "کوردی (سۆرانی)";
                 targetLangText.textContent = "English";
-                inputText.placeholder = "دەقەکەت لێرە بنووسە...";
+                inputText.placeholder = "لێرە بنووسە، خۆکارانە وەردەگێڕدرێت...";
                 inputText.style.direction = "rtl";
                 outputText.style.direction = "ltr";
             }
             clearFields();
         });
 
-        // ئەژمارکردنی پیتەکان
         inputText.addEventListener('input', () => {
             const length = inputText.value.length;
             charCount.textContent = `${length} / 5000`;
+            
+            clearTimeout(typingTimer);
+            if (inputText.value.trim() !== "") {
+                typingTimer = setTimeout(performTranslation, doneTypingInterval);
+            } else {
+                clearFields();
+            }
         });
 
         clearBtn.addEventListener('click', clearFields);
@@ -314,39 +433,41 @@
         copyBtn.addEventListener('click', () => {
             if (!outputText.classList.contains('placeholder-text')) {
                 navigator.clipboard.writeText(outputText.textContent);
-                alert(sourceLang === "ckb" ? "کۆپی کرا!" : "Copied!");
+                const origIcon = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="fa-solid fa-circle-check" style="color: #00f2fe;"></i>';
+                setTimeout(() => { copyBtn.innerHTML = origIcon; }, 1200);
             }
         });
 
-        // کرداری وەرگێڕانی ڕاستەوخۆ لە ڕێگەی سێرڤەرەوە
-        translateBtn.addEventListener('click', async () => {
+        translateBtn.addEventListener('click', performTranslation);
+
+        async function performTranslation() {
             const text = inputText.value.trim();
             if (text === "") return;
 
             outputText.classList.remove('placeholder-text');
-            btnText.textContent = sourceLang === "ckb" ? "چاوەڕوان بە..." : "Translating...";
-            translateBtn.disabled = true;
+            outputText.style.opacity = "0.5";
 
             try {
-                // بەکارهێنانی سێرڤەرێکی گشتی و بێبەرامبەر بۆ وەرگێڕانی دەقەکە
                 const response = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`);
                 const data = await response.json();
                 
-                // کۆکردنەوەی دەرئەنجامی وەرگێڕانەکە
                 let translatedText = "";
                 data[0].forEach(item => {
                     if (item[0]) translatedText += item[0];
                 });
 
                 outputText.textContent = translatedText;
+                outputText.classList.add('fade-in-text');
+                setTimeout(() => { outputText.classList.remove('fade-in-text'); }, 300);
+
             } catch (error) {
                 console.error(error);
-                outputText.textContent = sourceLang === "ckb" ? "هەڵەیەک ڕوویدا! تکایە هێڵەکەت بپشکنە." : "An error occurred! Please check your connection.";
+                outputText.textContent = sourceLang === "ckb" ? "کێشەیەک لە هێڵەکەتدا هەیە..." : "Connection error...";
             } finally {
-                btnText.textContent = sourceLang === "ckb" ? "وەرگێڕان" : "Translate";
-                translateBtn.disabled = false;
+                outputText.style.opacity = "1";
             }
-        });
+        }
     </script>
 </body>
 </html>
